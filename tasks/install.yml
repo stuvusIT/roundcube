@@ -5,6 +5,11 @@
       - "roundcube_des_key is defined"
       - "roundcube_des_key | length == 24"
 
+- name: Update apt repositories cache and Install awk
+  apt:
+    update_cache: yes
+  changed_when: false
+
 - name: Install required apt packages
   apt:
     name: "{{ item }}"
@@ -14,6 +19,7 @@
     - file
     - wget
     - php-zip
+    - git
 
 - name: Create group
   group:
@@ -79,7 +85,9 @@
   register: _roundcube_composer_json
 
 - name: Copy missing composer.json
-  command: 'cp {{ roundcube_unarchive_dir }}/composer.json-dist {{ roundcube_unarchive_dir }}/composer.json'
+  copy:
+    src: "{{ roundcube_unarchive_dir }}/composer.json-dist"
+    dest: "{{ roundcube_unarchive_dir }}/composer.json"
   args:
     creates: '{{ roundcube_unarchive_dir }}/composer.json'
   when: _roundcube_composer_json.stat.exists
@@ -97,7 +105,7 @@
     pkg: git
     state: present
 
-- name: Run composer install
+- name: Run composer install to install php dependencies
   composer:
     command: install
     working_dir: "{{ roundcube_unarchive_dir }}"

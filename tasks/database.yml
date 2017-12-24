@@ -27,5 +27,4 @@
 
 - name: Run update
   shell: '{{ roundcube_unarchive_dir }}/bin/update.sh'
-  changed_when: false # make it idempotence
-  tags: ['skip_ansible_lint']
+  changed_when: false

@@ -1,6 +1,5 @@
 ---
-
-- name: Add roundcube config
+- name: Copy roundcube config
   template:
     src: config.inc.php
     dest: '{{ roundcube_unarchive_dir }}/config/config.inc.php'
