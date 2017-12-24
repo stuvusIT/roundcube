@@ -1,0 +1,94 @@
+---
+- name: Install required apt packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - composer
+    - python-mysqldb
+    - file
+    - wget
+    - php-zip
+
+- name: Create group
+  group:
+    name: '{{ roundcube_group }}'
+    state: present
+
+- name: Create user
+  user:
+    name: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    state: present
+
+- name: Ensure working dir exists
+  file:
+    path: '{{ roundcube_working_dir }}'
+    state: directory
+
+- name: Unarchive file
+  register: roundcube_extract
+  unarchive:
+    src: '{{ roundcube_download_url }}'
+    dest: '{{ roundcube_working_dir }}'
+    copy: no
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0755'
+    creates: '{{ roundcube_unarchive_dir }}'
+
+- name: Prepare directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0711'
+  with_items:
+    - '{{ roundcube_working_dir }}'
+    - '{{ roundcube_working_dir }}/logs'
+    - '{{ roundcube_working_dir }}/sessions'
+    - '{{ roundcube_working_dir }}/usr/share/'
+
+- name: Prepare directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0777'
+  with_items:
+    - '{{ roundcube_working_dir }}/tmp'
+    - '{{ roundcube_unarchive_dir }}/logs'
+    - '{{ roundcube_unarchive_dir }}/temp'
+
+- name: Check if composer.json-dist exists
+  stat:
+    path: '{{ roundcube_unarchive_dir }}/composer.json-dist'
+  register: _roundcube_composer_json
+
+- name: Copy missing composer.json
+  command: 'cp {{ roundcube_unarchive_dir }}/composer.json-dist {{ roundcube_unarchive_dir }}/composer.json'
+  args:
+    creates: '{{ roundcube_unarchive_dir }}/composer.json'
+  when: _roundcube_composer_json.stat.exists
+  become: true
+  become_user: '{{ roundcube_user }}'
+
+- name: Run 3rd party installer
+  shell: "./bin/install-jsdeps.sh"
+  args: 
+    chdir: "{{ roundcube_unarchive_dir }}"
+  changed_when: false
+
+- name: Ensure git is installed
+  apt:
+    pkg: git
+    state: present
+
+- name: Run composer install
+  composer:
+    command: install
+    working_dir: "{{ roundcube_unarchive_dir }}"
+    no_dev: true
+  become: true
+  become_user: '{{ roundcube_user }}'

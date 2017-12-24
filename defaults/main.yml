@@ -1,0 +1,40 @@
+---
+# Roundcube Version
+roundcube_install_version: '1.3.3'
+roundcube_user: www-data
+roundcube_group: www-data
+
+# See https://roundcube.net/download/
+roundcube_download_url: 'https://github.com/roundcube/roundcubemail/releases/download/{{ roundcube_install_version }}/roundcubemail-{{ roundcube_install_version }}.tar.gz'
+roundcube_validate_certs: 'true'
+
+# Database
+roundcube_sql_host: "localhost"
+roundcube_sql_database: "roundcube"
+roundcube_sql_user: "roundcube"
+
+# Email Server
+roundcube_default_host: "ssl://{{ mailserver_fqdn_hostname | default('localhost') }}"
+roundcube_default_port: '993'
+roundcube_smtp_server: "tls://{{ mailserver_fqdn_hostname | default('localhost') }}"
+roundcube_smtp_port: '587'
+roundcube_smtp_user: ''
+roundcube_smtp_pass: ''
+
+# Roundcube config
+roundcube_support_url: ''
+roundcube_ip_check: 'true'
+roundcube_product_name: 'ambimax® RoundCube'
+roundcube_plugins: ['archive', 'zipdownload', 'managesieve', 'password']
+roundcube_language: 'de'
+roundcube_enable_spellcheck: 'false'
+roundcube_mail_pagesize: 50
+roundcube_draft_autosave: 300
+roundcube_mime_param_folding: 0
+roundcube_mdn_requests: 2
+roundcube_skin: 'larry'
+roundcube_log_driver: 'syslog'
+
+# Directories
+roundcube_working_dir: '/opt/roundcube'
+roundcube_unarchive_dir: "{{ roundcube_working_dir }}/roundcubemail-{{ roundcube_install_version }}"

@@ -1,0 +1,31 @@
+---
+- name: Remove anonymous user account
+  mysql_user:
+    name: ''
+    host: localhost
+    state: absent
+
+- name: Create a new database with name '{{ roundcube_sql_database }}'
+  mysql_db:
+    name: "{{ roundcube_sql_database }}"
+
+- name: Create mariadb user
+  mysql_user:
+    name: "{{ roundcube_sql_user }}"
+    password: "{{ roundcube_sql_password | mandatory }}"
+    priv: '{{ roundcube_sql_database }}.*:ALL,GRANT'
+    state: present
+
+- name: Check if database is empty
+  shell: 'mysql -e "USE {{ roundcube_sql_database }}; SHOW TABLES;" | wc -l'
+  register: _roundcube_db
+  changed_when: false
+
+- name: Import database
+  shell: 'mysql {{ roundcube_sql_database }} < {{ roundcube_unarchive_dir }}/SQL/mysql.initial.sql'
+  when: _roundcube_db.stdout == '0'
+
+- name: Run update
+  shell: '{{ roundcube_unarchive_dir }}/bin/update.sh'
+  changed_when: false # make it idempotence
+  tags: ['skip_ansible_lint']
