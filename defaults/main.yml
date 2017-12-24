@@ -14,9 +14,9 @@ roundcube_sql_database: "roundcube"
 roundcube_sql_user: "roundcube"
 
 # Email Server
-roundcube_default_host: "ssl://{{ mailserver_fqdn_hostname | default('localhost') }}"
+roundcube_default_host: "ssl://localhost"
 roundcube_default_port: '993'
-roundcube_smtp_server: "tls://{{ mailserver_fqdn_hostname | default('localhost') }}"
+roundcube_smtp_server: "tls://localhost"
 roundcube_smtp_port: '587'
 roundcube_smtp_user: '%u'
 roundcube_smtp_pass: '%p'
