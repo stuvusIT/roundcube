@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Fritz Otlinghaus
+  description: roundcube instance
+  company: stuvus (https://stuvus.uni-stuttgart.de)
+
+  license: CC-BY-SA
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+        - yakkety
+        - zesty
+        - artful
+
+  galaxy_tags:
+    - roundcube
+    - webmail
+
+dependencies: []

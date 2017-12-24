@@ -1,0 +1,109 @@
+---
+- name: Check roundcube_des_key length
+  assert:
+    that: 
+      - "roundcube_des_key is defined"
+      - "roundcube_des_key | length == 24"
+
+- name: Update apt repositories cache
+  apt:
+    update_cache: yes
+  changed_when: false
+
+- name: Install required apt packages
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - composer
+    - python-mysqldb
+    - file
+    - wget
+    - php-zip
+    - git
+
+- name: Create group
+  group:
+    name: '{{ roundcube_group }}'
+    state: present
+
+- name: Create user
+  user:
+    name: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    state: present
+
+- name: Ensure working dir exists
+  file:
+    path: '{{ roundcube_working_dir }}'
+    state: directory
+
+- name: 'Download roundcube from {{ roundcube_download_url }}'
+  get_url: 
+    url: '{{ roundcube_download_url }}'
+    dest: "{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz"
+  become: false
+  delegate_to: localhost
+
+- name: Unarchive file
+  register: roundcube_extract
+  unarchive:
+    src: '{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz'
+    dest: '{{ roundcube_working_dir }}'
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0755'
+    creates: '{{ roundcube_unarchive_dir }}'
+
+- name: Prepare directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0711'
+  with_items:
+    - '{{ roundcube_working_dir }}'
+    - '{{ roundcube_working_dir }}/logs'
+    - '{{ roundcube_working_dir }}/sessions'
+    - '{{ roundcube_working_dir }}/usr/share/'
+
+- name: Prepare directories
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0777'
+  with_items:
+    - '{{ roundcube_working_dir }}/tmp'
+    - '{{ roundcube_unarchive_dir }}/logs'
+    - '{{ roundcube_unarchive_dir }}/temp'
+
+- name: Check if composer.json-dist exists
+  stat:
+    path: '{{ roundcube_unarchive_dir }}/composer.json-dist'
+  register: _roundcube_composer_json
+
+- name: Copy missing composer.json
+  copy:
+    src: "{{ roundcube_unarchive_dir }}/composer.json-dist"
+    dest: "{{ roundcube_unarchive_dir }}/composer.json"
+  args:
+    creates: '{{ roundcube_unarchive_dir }}/composer.json'
+  when: _roundcube_composer_json.stat.exists
+  become: true
+  become_user: '{{ roundcube_user }}'
+
+- name: Run 3rd party installer
+  shell: "./bin/install-jsdeps.sh"
+  args: 
+    chdir: "{{ roundcube_unarchive_dir }}"
+  changed_when: false
+
+- name: Run composer install to install php dependencies
+  composer:
+    command: install
+    working_dir: "{{ roundcube_unarchive_dir }}"
+    no_dev: true
+  become: true
+  become_user: '{{ roundcube_user }}'
