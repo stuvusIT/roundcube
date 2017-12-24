@@ -100,11 +100,6 @@
     chdir: "{{ roundcube_unarchive_dir }}"
   changed_when: false
 
-- name: Ensure git is installed
-  apt:
-    pkg: git
-    state: present
-
 - name: Run composer install to install php dependencies
   composer:
     command: install
