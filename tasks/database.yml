@@ -26,5 +26,6 @@
   when: _roundcube_db.stdout == '0'
 
 - name: Run update
-  shell: '{{ roundcube_unarchive_dir }}/bin/update.sh'
+  shell: 'yes "?" | {{ roundcube_unarchive_dir }}/bin/update.sh'
   changed_when: false
+  failed_when: false

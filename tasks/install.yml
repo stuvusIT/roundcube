@@ -20,6 +20,10 @@
     - wget
     - php-zip
     - git
+    - php-mbstring
+    - php-gd
+    - php-dom
+    - php-mysqli
 
 - name: Create group
   group:
@@ -88,17 +92,9 @@
   copy:
     src: "{{ roundcube_unarchive_dir }}/composer.json-dist"
     dest: "{{ roundcube_unarchive_dir }}/composer.json"
-  args:
-    creates: '{{ roundcube_unarchive_dir }}/composer.json'
+    remote_src: yes
+    owner: '{{ roundcube_user }}'
   when: _roundcube_composer_json.stat.exists
-  become: true
-  become_user: '{{ roundcube_user }}'
-
-- name: Run 3rd party installer
-  shell: "./bin/install-jsdeps.sh"
-  args: 
-    chdir: "{{ roundcube_unarchive_dir }}"
-  changed_when: false
 
 - name: Run composer install to install php dependencies
   composer:
@@ -107,3 +103,9 @@
     no_dev: true
   become: true
   become_user: '{{ roundcube_user }}'
+
+- name: Run 3rd party installer
+  shell: "./bin/install-jsdeps.sh"
+  args: 
+    chdir: "{{ roundcube_unarchive_dir }}"
+  changed_when: false
