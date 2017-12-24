@@ -18,16 +18,16 @@ roundcube_default_host: "ssl://{{ mailserver_fqdn_hostname | default('localhost'
 roundcube_default_port: '993'
 roundcube_smtp_server: "tls://{{ mailserver_fqdn_hostname | default('localhost') }}"
 roundcube_smtp_port: '587'
-roundcube_smtp_user: ''
-roundcube_smtp_pass: ''
+roundcube_smtp_user: '%u'
+roundcube_smtp_pass: '%p'
 
 # Roundcube config
 roundcube_support_url: ''
 roundcube_ip_check: 'true'
-roundcube_product_name: 'ambimax® RoundCube'
+roundcube_product_name: 'roundcube-Webmail'
 roundcube_plugins: ['archive', 'zipdownload', 'managesieve', 'password']
 roundcube_language: 'de'
-roundcube_enable_spellcheck: 'false'
+roundcube_enable_spellcheck: 'true'
 roundcube_mail_pagesize: 50
 roundcube_draft_autosave: 300
 roundcube_mime_param_folding: 0

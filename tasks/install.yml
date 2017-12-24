@@ -25,12 +25,19 @@
     path: '{{ roundcube_working_dir }}'
     state: directory
 
+- name: 'Download roundcube from {{ roundcube_download_url }}'
+  get_url: 
+    url: '{{ roundcube_download_url }}'
+    dest: "{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz"
+  when: mattermost_enterprise
+  become: false
+  delegate_to: localhost
+
 - name: Unarchive file
   register: roundcube_extract
   unarchive:
-    src: '{{ roundcube_download_url }}'
+    src: '{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz'
     dest: '{{ roundcube_working_dir }}'
-    copy: no
     owner: '{{ roundcube_user }}'
     group: '{{ roundcube_group }}'
     mode: '0755'
