@@ -1,4 +1,10 @@
 ---
+- name: Check roundcube_des_key length
+  assert:
+    that: 
+      - "roundcube_des_key is defined"
+      - "roundcube_des_key | length == 24"
+
 - name: Install required apt packages
   apt:
     name: "{{ item }}"
@@ -29,7 +35,6 @@
   get_url: 
     url: '{{ roundcube_download_url }}'
     dest: "{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz"
-  when: mattermost_enterprise
   become: false
   delegate_to: localhost
 
