@@ -38,3 +38,6 @@ roundcube_log_driver: 'syslog'
 # Directories
 roundcube_working_dir: '/opt/roundcube'
 roundcube_unarchive_dir: "{{ roundcube_working_dir }}/roundcubemail-{{ roundcube_install_version }}"
+
+roundcube_managesieve_port: 4190
+roundcube_managesieve_host: localhost
