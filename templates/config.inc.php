@@ -91,3 +91,7 @@ $config['mail_pagesize'] = '{{ roundcube_mail_pagesize }}';
 $config['draft_autosave'] = '{{ roundcube_draft_autosave }}';
 $config['mime_param_folding'] = '{{ roundcube_mime_param_folding }}';
 $config['mdn_requests'] = '{{ roundcube_mdn_requests }}';
+{% if 'managesieve' in roundcube_plugins %}
+$config['managesieve_host'] = '{{ roundcube_managesieve_host }}';
+$config['managesieve_port'] = '{{ roundcube_managesieve_port }}';
+{% endif %}
