@@ -95,3 +95,4 @@ $config['mdn_requests'] = '{{ roundcube_mdn_requests }}';
 $config['managesieve_host'] = '{{ roundcube_managesieve_host }}';
 $config['managesieve_port'] = '{{ roundcube_managesieve_port }}';
 {% endif %}
+$config['mail_domain'] = '{{ roundcube_mail_domain }}';
