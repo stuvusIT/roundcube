@@ -1,9 +1,9 @@
 ---
-- include: install.yml
+- import_tasks: install.yml
   tags: ['roundcube-install']
 
-- include: configure.yml
+- import_tasks: configure.yml
   tags: ['roundcube-configure']
 
-- include: database.yml
+- import_tasks: database.yml
   tags: ['roundcube-database']
