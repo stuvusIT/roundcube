@@ -98,3 +98,6 @@ $config['managesieve_port'] = '{{ roundcube_managesieve_port }}';
 {% if roundcube_mail_domain is defined %}
 $config['mail_domain'] = '{{ roundcube_mail_domain }}';
 {% endif %}
+{% for option in roundcube_extra_options %}
+$config['{{ option.key }}'] = '{{ option.value }}';
+{% endfor %}
