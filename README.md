@@ -46,6 +46,7 @@ It needs an apt based system like Ubuntu. Also the [stuvusIT.nginx](https://gith
 | `roundcube_managesieve_port`        | :heavy_multiplication_x: | `4190`                                                                      | Port of the sieve server.                                                                                                                                                                       |
 | `roundcube_mail_domain`             | :heavy_multiplication_x: | ` `                                                                         | This domain will be used to form e-mail addresses of new users.                                                                                                                                 |
 | `roundcube_roundcube_extra_options` | :heavy_multiplication_x: | `[]`                                                                        | List of dicts each with a value and key option that will be written into the config file                                                                                                        |
+
 For more information please read the [roundcube default config file](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php)
 
 ## Example Playbook
