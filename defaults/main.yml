@@ -41,3 +41,4 @@ roundcube_unarchive_dir: "{{ roundcube_working_dir }}/roundcubemail-{{ roundcube
 
 roundcube_managesieve_port: 4190
 roundcube_managesieve_host: localhost
+roundcube_extra_options: []
