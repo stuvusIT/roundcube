@@ -96,6 +96,14 @@
     owner: '{{ roundcube_user }}'
   when: _roundcube_composer_json.stat.exists
 
+- name: Run composer require to add LDAP deps for roundcube
+  composer:
+    command: require
+    working_dir: "{{ roundcube_unarchive_dir }}"
+    arguments: kolab/Net_LDAP3
+    no_dev: true
+  become_user: '{{ roundcube_user }}'
+
 - name: Run composer install to install php dependencies
   composer:
     command: install
