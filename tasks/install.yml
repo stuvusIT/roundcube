@@ -1,14 +1,9 @@
 ---
 - name: Check roundcube_des_key length
   assert:
-    that: 
+    that:
       - "roundcube_des_key is defined"
       - "roundcube_des_key | length == 24"
-
-- name: Update apt repositories cache
-  apt:
-    update_cache: yes
-  changed_when: false
 
 - name: Install required apt packages
   apt:

@@ -5,7 +5,7 @@ Sets up and configures a roundcube instance.
 
 ## Requirements
 
-It needs an apt based system like Ubuntu. Also the [stuvusIT.nginx](https://github.com/stuvusIT/nginx), [stuvusIT.php-fpm](https://github.com/stuvusIT/php-fpm) and [stuvusIT.mariadb](https://github.com/stuvusIT/mariadb) roles are required.
+It needs an apt based system like Debian or Ubuntu. Also the [stuvusIT.nginx](https://github.com/stuvusIT/nginx), [stuvusIT.php-fpm](https://github.com/stuvusIT/php-fpm) and [stuvusIT.mariadb](https://github.com/stuvusIT/mariadb) roles are required.
 
 
 ## Role Variables
