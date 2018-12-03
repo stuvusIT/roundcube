@@ -43,7 +43,6 @@
   delegate_to: localhost
 
 - name: Unarchive file
-  register: roundcube_extract
   unarchive:
     src: '{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz'
     dest: '{{ roundcube_working_dir }}'
@@ -51,7 +50,6 @@
     group: '{{ roundcube_group }}'
     mode: '0755'
     creates: '{{ roundcube_unarchive_dir }}'
-  register: roundcube_unarchive
 
 - name: Prepare directories
   file:
