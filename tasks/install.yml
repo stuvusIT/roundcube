@@ -7,18 +7,17 @@
 
 - name: Install required apt packages
   apt:
-    name: "{{ item }}"
-  with_items:
-    - composer
-    - python-mysqldb
-    - file
-    - wget
-    - php-zip
-    - git
-    - php-mbstring
-    - php-gd
-    - php-dom
-    - php-mysqli
+    name:
+      - composer
+      - python-mysqldb
+      - file
+      - wget
+      - php-zip
+      - git
+      - php-mbstring
+      - php-gd
+      - php-dom
+      - php-mysqli
 
 - name: Create group
   group:
@@ -52,6 +51,7 @@
     group: '{{ roundcube_group }}'
     mode: '0755'
     creates: '{{ roundcube_unarchive_dir }}'
+  register: roundcube_unarchive
 
 - name: Prepare directories
   file:
@@ -77,6 +77,15 @@
     - '{{ roundcube_working_dir }}/tmp'
     - '{{ roundcube_unarchive_dir }}/logs'
     - '{{ roundcube_unarchive_dir }}/temp'
+
+- name: Link roundcube directory to current extracted version
+  file:
+    src: '{{ roundcube_unarchive_dir }}'
+    dest: '{{ roundcube_working_dir }}/current-version'
+    state: link
+    mode: '0777'
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
 
 - name: Check if composer.json-dist exists
   stat:
