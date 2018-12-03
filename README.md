@@ -15,7 +15,7 @@ It needs an apt based system like Debian or Ubuntu. Also the [stuvusIT.nginx](ht
 | `global_cache_dir`                  | :heavy_check_mark:       |                                                                             | Cache directory to download roundcube files to                                                                                                                                                  |
 | `roundcube_sql_password`            | :heavy_check_mark:       |                                                                             | Password of the `roundcube_sql_user`                                                                                                                                                            |
 | `roundcube_des_key`                 | :heavy_check_mark:       |                                                                             | This key is used to encrypt the users imap password which is stored in the session record (and the client cookie if remember password is enabled). Please provide a string of exactly 24 chars. |
-| `roundcube_install_version`         | :heavy_multiplication_x: | `1.3.3`                                                                     | Version to install                                                                                                                                                                              |
+| `roundcube_install_version`         | :heavy_multiplication_x: | `1.3.8`                                                                     | Version to install                                                                                                                                                                              |
 | `roundcube_user`                    | :heavy_multiplication_x: | `www-data`                                                                  | Name of the user to be used for roundcube                                                                                                                                                       |
 | `roundcube_group`                   | :heavy_multiplication_x: | `www-data`                                                                  | Group to be used for roundcube                                                                                                                                                                  |
 | `roundcube_validate_certs`          | :heavy_multiplication_x: | `true`                                                                      | Should roundcube validate certs during connection to the mail server                                                                                                                            |
@@ -41,13 +41,13 @@ It needs an apt based system like Debian or Ubuntu. Also the [stuvusIT.nginx](ht
 | `roundcube_skin`                    | :heavy_multiplication_x: | `larry`                                                                     | Theme to be used                                                                                                                                                                                |
 | `roundcube_log_driver`              | :heavy_multiplication_x: | `syslog`                                                                    | Where should roundcube log to.                                                                                                                                                                  |
 | `roundcube_working_dir`             | :heavy_multiplication_x: | `/opt/roundcube`                                                            | Working dir for this installation                                                                                                                                                               |
-| `roundcube_unarchive_dir`           | :heavy_multiplication_x: | `{{ roundcube_working_dir }}/roundcubemail-{{ roundcube_install_version }}` | Where should roundcube be extracted to                                                                                                                                                          |
 | `roundcube_managesieve_host`        | :heavy_multiplication_x: | `localhost`                                                                 | Host of the sieve server.                                                                                                                                                                       |
 | `roundcube_managesieve_port`        | :heavy_multiplication_x: | `4190`                                                                      | Port of the sieve server.                                                                                                                                                                       |
 | `roundcube_mail_domain`             | :heavy_multiplication_x: | ` `                                                                         | This domain will be used to form e-mail addresses of new users.                                                                                                                                 |
 | `roundcube_roundcube_extra_options` | :heavy_multiplication_x: | `[]`                                                                        | List of dicts each with a value and key option that will be written into the config file                                                                                                        |
 
 For more information please read the [roundcube default config file](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php)
+The role will download and extract the selected version to `{{ roundcube_working_dir }}/roundcubemail-{{ roundcube_install_version }}` and symlink the current version to `{{ roundcube_working_dir }}/current-version/`.
 
 ## Example Playbook
 
@@ -55,6 +55,7 @@ For more information please read the [roundcube default config file](https://git
 - hosts: all
   become: true
   vars:
+    roundcube_working_dir: /opt/roundcube
     roundcube_user: www-data
     roundcube_group: www-data
     roundcube_default_host: ssl://imap01.faveve.uni-stuttgart.de
@@ -83,7 +84,7 @@ For more information please read the [roundcube default config file](https://git
         default_server: true
         crypto: true
         https: false
-        root: "{{ roundcube_unarchive_dir }}/"
+        root: "{{ roundcube_working_dir }}/current-version/"
         index_files:
           - index.php
         locations:
