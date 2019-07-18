@@ -48,6 +48,7 @@ It needs an apt based system like Debian or Ubuntu. Also the [stuvusIT.nginx](ht
 
 For more information please read the [roundcube default config file](https://github.com/roundcube/roundcubemail/blob/master/config/defaults.inc.php)
 The role will download and extract the selected version to `{{ roundcube_working_dir }}/roundcubemail-{{ roundcube_install_version }}` and symlink the current version to `{{ roundcube_working_dir }}/current-version/`.
+Directories with reusable content between versions (`logs`, `plugin`, `skins`) will be moved to `roundcube_working_dir` and symlinked there for the current version.
 
 ## Example Playbook
 
