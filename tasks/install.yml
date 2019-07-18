@@ -30,10 +30,19 @@
     group: '{{ roundcube_group }}'
     state: present
 
-- name: Ensure working dir exists
+- name: Prepare directories
   file:
-    path: '{{ roundcube_working_dir }}'
+    path: '{{ item }}'
     state: directory
+    owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
+    mode: '0755'
+  loop:
+    - '{{ roundcube_unarchive_dir }}'
+    - '{{ roundcube_working_dir }}'
+    - '{{ roundcube_working_dir }}/logs'
+    - '{{ roundcube_working_dir }}/skins'
+    - '{{ roundcube_working_dir }}/plugins'
 
 - name: 'Download roundcube from {{ roundcube_download_url }}'
   get_url: 
@@ -49,39 +58,48 @@
     owner: '{{ roundcube_user }}'
     group: '{{ roundcube_group }}'
     mode: '0755'
-    creates: '{{ roundcube_unarchive_dir }}'
+    creates: '{{ roundcube_unarchive_dir }}/bin'
+  register: unarchive
 
-- name: Prepare directories
+- name: Synchronize new files to reusable directories
+  synchronize:
+    src: '{{ roundcube_unarchive_dir }}/{{ item }}/'
+    dest: '{{ roundcube_working_dir }}/{{ item }}'
+  loop:
+    - logs
+    - plugins
+    - skins
+  delegate_to: '{{ inventory_hostname }}'
+  when: unarchive.changed
+
+- name: Remove vendor reusable directories from unarchive path
   file:
-    path: '{{ item }}'
-    state: directory
+    state: absent
+    path: '{{ roundcube_unarchive_dir }}/{{ item }}'
+  loop:
+    - logs
+    - plugins
+    - skins
+  when: unarchive.changed
+
+- name: Link reusable directories to main dir
+  file:
+    state: link
+    dest: '{{ roundcube_unarchive_dir }}/{{ item }}'
+    src: '{{ roundcube_working_dir }}/{{ item }}'
     owner: '{{ roundcube_user }}'
     group: '{{ roundcube_group }}'
-    mode: '0711'
-  with_items:
-    - '{{ roundcube_working_dir }}'
-    - '{{ roundcube_working_dir }}/logs'
-    - '{{ roundcube_working_dir }}/sessions'
-    - '{{ roundcube_working_dir }}/usr/share/'
-
-- name: Prepare directories
-  file:
-    path: '{{ item }}'
-    state: directory
-    owner: '{{ roundcube_user }}'
-    group: '{{ roundcube_group }}'
-    mode: '0777'
-  with_items:
-    - '{{ roundcube_working_dir }}/tmp'
-    - '{{ roundcube_unarchive_dir }}/logs'
-    - '{{ roundcube_unarchive_dir }}/temp'
+    force: True
+  loop:
+    - logs
+    - plugins
+    - skins
 
 - name: Link roundcube directory to current extracted version
   file:
     src: '{{ roundcube_unarchive_dir }}'
     dest: '{{ roundcube_working_dir }}/current-version'
     state: link
-    mode: '0777'
     owner: '{{ roundcube_user }}'
     group: '{{ roundcube_group }}'
 
@@ -96,6 +114,7 @@
     dest: "{{ roundcube_unarchive_dir }}/composer.json"
     remote_src: yes
     owner: '{{ roundcube_user }}'
+    group: '{{ roundcube_group }}'
   when: _roundcube_composer_json.stat.exists
 
 - name: Run composer require to add LDAP deps for roundcube
