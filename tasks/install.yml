@@ -10,6 +10,7 @@
     name:
       - composer
       - python-mysqldb
+      - python3-mysqldb
       - file
       - wget
       - php-zip
