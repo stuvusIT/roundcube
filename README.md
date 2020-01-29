@@ -66,7 +66,7 @@ Directories with reusable content between versions (`logs`, `plugin`, `skins`) w
     roundcube_smtp_port: 587
     roundcube_smtp_user: "%u"
     roundcube_smtp_pass: "%p"
-    roundcube_des_key: igTkbqVCYr8EYxXntKWWJw9H 
+    roundcube_des_key: igTkbqVCYr8EYxXntKWWJw9H
     roundcube_sql_password: wjzi9oRC2wcdgGOJnvXv2suQ
     php_fpm_pools:
       - name: roundcube
@@ -89,12 +89,12 @@ Directories with reusable content between versions (`logs`, `plugin`, `skins`) w
         index_files:
           - index.php
         locations:
-          - condition: ~ ^/(bin|CHANGELOG|composer.json|composer.json-dist|config|INSTALL|LICENSE|logs|README.md|SQL|temp|UPGRADING)/ 
+          - condition: ~ ^/(bin|CHANGELOG|composer.json|composer.json-dist|config|INSTALL|LICENSE|logs|README.md|SQL|temp|UPGRADING)/
             content: deny all;
           - condition: /robots.txt
             content: allow all; log_not_found off; access_log off;
           - condition: /
-            content: 
+            content:
               |
                 index index.php
                 try_files $uri $uri/ index.php =404;

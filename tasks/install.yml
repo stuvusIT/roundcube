@@ -46,7 +46,7 @@
     - '{{ roundcube_working_dir }}/plugins'
 
 - name: 'Download roundcube from {{ roundcube_download_url }}'
-  get_url: 
+  get_url:
     url: '{{ roundcube_download_url }}'
     dest: "{{ global_cache_dir | mandatory }}/roundcubemail-{{ roundcube_install_version }}.tar.gz"
   become: false
@@ -136,6 +136,6 @@
 
 - name: Run 3rd party installer
   shell: "./bin/install-jsdeps.sh"
-  args: 
+  args:
     chdir: "{{ roundcube_unarchive_dir }}"
   changed_when: false
