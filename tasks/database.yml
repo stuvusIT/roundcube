@@ -6,7 +6,7 @@
     state: absent
 
 - name: Create a new database with name '{{ roundcube_sql_database }}'
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ roundcube_sql_database }}"
 
 - name: Create mariadb user
